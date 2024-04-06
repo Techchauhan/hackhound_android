@@ -16,16 +16,21 @@ class CreateAccountPage extends StatefulWidget {
 class _CreateAccountPageState extends State<CreateAccountPage> {
   String? _selectedAccountType;
   File? _aadharCardPhoto;
+  String? _selectedGender;
   DateTime? _selectedDateOfBirth;
   String? _accountNumber;
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _numberController = TextEditingController(); // New field
+  final TextEditingController _addressController = TextEditingController(); // New field
   bool _isCreatingAccount = false;
 
   @override
   void dispose() {
     _fullNameController.dispose();
     _emailController.dispose();
+    _numberController.dispose(); // Dispose number controller
+    _addressController.dispose(); // Dispose address controller
     super.dispose();
   }
 
@@ -46,7 +51,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         _selectedAccountType == null ||
         _fullNameController.text.isEmpty ||
         _emailController.text.isEmpty ||
-        _selectedDateOfBirth == null) {
+        _selectedDateOfBirth == null ||
+        _numberController.text.isEmpty || // New field validation
+        _selectedGender == null || // New field validation
+        _addressController.text.isEmpty) { // New field validation
       return; // Prevent account creation if necessary information is missing
     }
 
@@ -83,7 +91,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         'dateOfBirth': _selectedDateOfBirth,
         'accountType': _selectedAccountType,
         'accountNumber': _accountNumber,
-        'balance': "0",
+        'number': _numberController,
+        'savingBalance': "0",
+        'cashPoints': "0",
+        'number': _numberController.text.trim(), // Store number field
+        'gender': _selectedGender, // Store gender field
+        'address': _addressController.text.trim(), // Store address field
         // Add more fields as needed
       });
 
@@ -98,6 +111,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       // Clear form fields and photo after successful account creation
       _fullNameController.clear();
       _emailController.clear();
+      _numberController.clear(); // Clear number field
+      _addressController.clear(); // Clear address field
       setState(() {
         _selectedAccountType = null;
         _aadharCardPhoto = null;
@@ -190,6 +205,45 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   _selectedDateOfBirth != null
                       ? 'Date of Birth: ${_selectedDateOfBirth!.day}/${_selectedDateOfBirth!.month}/${_selectedDateOfBirth!.year}'
                       : 'Select Date of Birth',
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _numberController,
+                decoration: InputDecoration(
+                  labelText: 'Number',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                value: _selectedGender,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedGender = value;
+                  });
+                },
+                items: [
+                  DropdownMenuItem(
+                    child: Text('Male'),
+                    value: 'Male',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Female'),
+                    value: 'Female',
+                  ),
+                ],
+                decoration: InputDecoration(
+                  labelText: 'Gender',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _addressController,
+                decoration: InputDecoration(
+                  labelText: 'Address',
+                  border: OutlineInputBorder(),
                 ),
               ),
               SizedBox(height: 20),

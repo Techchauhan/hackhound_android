@@ -37,19 +37,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: PageView(
         children: [
           _buildPage(
-            'Special Rewards for Woman',
-            'Description for Page 1',
-            'assets/json/card.json',
+            '',
+            'Service Available in rural and remote areas',
+            'assets/json/woman.json',
           ),
           _buildPage(
-            'Page 2',
-            'Description for Page 2',
+            '',
+            'Easy to use for Everyone.',
             'assets/json/uncle.json',
           ),
           _buildPage(
-            'Page 3',
-            'Description for Page 3',
-            'assets/page3_image.jpg',
+            '',
+            'Easy to use Payment Gateway',
+            'assets/json/card.json',
           ),
         ],
       ),

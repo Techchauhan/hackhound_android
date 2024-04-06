@@ -18,7 +18,8 @@ class _SplashScreenState extends State<SplashScreen> {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user == null) {
           // If no user is logged in, navigate to the login page
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartingHomePage()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>StartingHomePage()
+          ));
         } else {
           // If a user is logged in, navigate to the home page
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
