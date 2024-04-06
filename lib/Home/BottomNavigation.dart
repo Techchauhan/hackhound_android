@@ -17,7 +17,7 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> with WidgetsBindingObserver {
   int _currentIndex = 2;
-  final PageController _pageController = PageController(initialPage: 3);
+  final PageController _pageController = PageController(initialPage: 2);
   final List<Widget> _tabs = [
     Offers(),
     CashPoints(),
@@ -25,6 +25,16 @@ class _BottomNavigationState extends State<BottomNavigation> with WidgetsBinding
     Emergency(),
     Setting(),
   ];
+
+  bool _isEnglish = true; // Track the current language state
+
+  // Define a function to toggle between English and Hindi
+  void toggleLanguage() {
+    setState(() {
+      _isEnglish = !_isEnglish;
+    });
+    // Add logic to change app language here
+  }
 
   @override
   void initState() {
@@ -139,11 +149,23 @@ class _BottomNavigationState extends State<BottomNavigation> with WidgetsBinding
       ),
       appBar: AppBar(
         actions: [
-          IconButton( icon:  Icon(Icons.notifications), color: Colors.red, onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationPage()));
-          },)
+          // Add IconButton for language toggle
+          IconButton(
+            icon: Icon(Icons.language),
+            onPressed: toggleLanguage,
+          ),
+          IconButton(
+            icon: Icon(Icons.notifications),
+            color: Colors.red,
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationPage()));
+            },
+          ),
         ],
-        title: Text("InRal", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red,fontSize: 25, fontStyle: FontStyle.italic),),
+        title: Text(
+          _isEnglish ? "InRal" : "इनरल",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 25, fontStyle: FontStyle.italic),
+        ),
       ),
       body: PageView(
         controller: _pageController,

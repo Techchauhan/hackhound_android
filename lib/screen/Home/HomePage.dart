@@ -1,5 +1,8 @@
+import 'package:banking/paymnet/UpiPaymnet.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key});
@@ -9,10 +12,48 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double savingAccountBalance = 5000.0;
-  double loanAccountBalance = 20000.0;
+  String savingAccountBalance = "0.0";
+  String loanAccountBalance = "0.0";
   bool isSavingBalanceVisible = false;
   bool isLoanBalanceVisible = false;
+
+
+  final List<String> images = [
+    'image1.jpg',
+    'image2.jpg',
+    'image3.jpg',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Call a function to retrieve the user's balances when the page initializes
+    retrieveBalances();
+  }
+
+  Future<void> retrieveBalances() async {
+    // Get the current user's UID
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      try {
+        print(uid);
+        // Retrieve the user document from Firestore
+        DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        // Get the balances from the user document
+        String savingBalance = userDoc['savingBalance'] ?? 0.0;
+        print(savingBalance);
+        String loanBalance = userDoc['loanBalance'] ?? 0.0;
+        // Update the state with the retrieved balances
+        setState(() {
+          savingAccountBalance = savingBalance.toString();
+          loanAccountBalance = loanBalance.toString();
+        });
+      } catch (error) {
+        print('Error retrieving balances: $error');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                     });
                   }),
                   SizedBox(width: 10),
-                  _buildAccountCard("Loan Account", loanAccountBalance, isLoanBalanceVisible, () {
+                  _buildAccountCard("Loan Account", loanAccountBalance.toString(), isLoanBalanceVisible, () {
                     setState(() {
                       isLoanBalanceVisible = !isLoanBalanceVisible;
                     });
@@ -50,7 +91,9 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildPaymentOption('assets/icons/upi-png.png', 'UPI ', () {}),
+                    _buildPaymentOption('assets/icons/upi-png.png', 'UPI ', () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>UpiPayments()));
+                    }),
                     SizedBox(width: 10),
                     _buildPaymentOption('assets/icons/wallet.png', 'Wallet', () {}),
                     SizedBox(width: 10),
@@ -61,13 +104,34 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            SizedBox(height: 100,),
+            CarouselSlider(
+              items: images.map((image) {
+                return Container(
+                  margin: const EdgeInsets.all(5.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      'assets/images/$image',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
+                );
+              }).toList(),
+              options: CarouselOptions(
+                autoPlay: true,
+                enlargeCenterPage: true,
+                aspectRatio: 2.0,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAccountCard(String title, double balance, bool isVisible, VoidCallback onTap) {
+  Widget _buildAccountCard(String title, String balance, bool isVisible, VoidCallback onTap) {
     return SizedBox(
       width: 200,
       height: 200,
@@ -106,6 +170,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
   Widget _buildPaymentOption(String imagePath, String title, Function() onTap) {
     return SizedBox(
       width: 80,
@@ -129,4 +194,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
