@@ -1,4 +1,5 @@
 import 'package:banking/Home/BottomNavigation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,6 +23,15 @@ class _LoginPageState extends State<LoginPage> {
         email: _usernameController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
+      // Generate biometrics token
+      String biometricsToken = generateBiometricsToken(userCredential.user!.uid);
+
+      // Store biometrics token in Firestore
+      await FirebaseFirestore.instance.collection('biometricsTokens').doc(userCredential.user!.uid).set({
+        'token': biometricsToken,
+      });
+
       // Navigate to the home page after successful login
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BottomNavigation()));
     } catch (error) {
@@ -30,6 +40,11 @@ class _LoginPageState extends State<LoginPage> {
       print("Error logging in: $error");
       // Optionally, show an error message to the user
     }
+  }
+
+  String generateBiometricsToken(String userId) {
+    // Example logic to generate biometrics token using user's UID
+    return userId;
   }
 
   @override

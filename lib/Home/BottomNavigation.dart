@@ -1,6 +1,8 @@
+import 'package:banking/Account/myAccount.dart';
 import 'package:banking/CashPoints/cashPoint.dart';
 import 'package:banking/Emergency/Emergency.dart';
 import 'package:banking/Setting/Settign.dart';
+import 'package:banking/Transection/TransectionPageDetails.dart';
 import 'package:banking/offers/offers.dart';
 import 'package:banking/screen/Home/HomePage.dart';
 import 'package:banking/screen/Home/StartingHomePage.dart';
@@ -15,7 +17,8 @@ class BottomNavigation extends StatefulWidget {
   _BottomNavigationState createState() => _BottomNavigationState();
 }
 
-class _BottomNavigationState extends State<BottomNavigation> with WidgetsBindingObserver {
+class _BottomNavigationState extends State<BottomNavigation>
+    with WidgetsBindingObserver {
   int _currentIndex = 2;
   final PageController _pageController = PageController(initialPage: 2);
   final List<Widget> _tabs = [
@@ -91,80 +94,154 @@ class _BottomNavigationState extends State<BottomNavigation> with WidgetsBinding
 
   @override
   Widget build(BuildContext context) {
+    bool isSigningOut = false;
+
     return Scaffold(
       drawer: Drawer(
+        backgroundColor: Color(0xFF97C1E1),
         child: Container(
           child: Column(
             children: [
-              SizedBox(height: 80,),
+              SizedBox(
+                height: 80,
+              ),
               CircleAvatar(
+                backgroundImage: AssetImage("assets/images/logo.png"),
                 radius: 50,
               ),
               ListTile(
-                leading: Icon(Icons.person, color:  Colors.red,),
+                leading: Icon(
+                  Icons.person,
+                  color: Colors.red,
+                ),
                 title: Text("My Account"),
-                onTap: (){
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MyAccountPage()));
                   Fluttertoast.showToast(msg: "My Account Open.");
                 },
               ),
               ListTile(
-                leading: Icon(Icons.star, color: Colors.red,),
+                leading: Icon(
+                  Icons.star,
+                  color: Colors.red,
+                ),
                 title: Text("Points"),
-                onTap: (){
-                  Fluttertoast.showToast(msg: "My Account Open.");
+                onTap: () {
+                  Fluttertoast.showToast(msg: "Cash Points");
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CashPoints()));
                 },
               ),
               ListTile(
-                leading: Icon(Icons.compare_arrows, color: Colors.red,),
+                leading: Icon(
+                  Icons.compare_arrows,
+                  color: Colors.red,
+                ),
                 title: Text("Transactions"),
-                onTap: (){
-                  Fluttertoast.showToast(msg: "My Account Open.");
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TransactionDetailsPage()));
+                  Fluttertoast.showToast(msg: "Transactions");
                 },
               ),
               ListTile(
-                leading: Icon(Icons.headphones, color: Colors.red,),
+                leading: Icon(
+                  Icons.headphones,
+                  color: Colors.red,
+                ),
                 title: Text("Contact Us."),
-                onTap: (){
-                  Fluttertoast.showToast(msg: "My Account Open.");
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Emergency()));
+
+                  Fluttertoast.showToast(msg: "Emergency");
                 },
               ),
               ListTile(
-                leading: Icon(Icons.monetization_on, color: Colors.red,),
+                leading: Icon(
+                  Icons.monetization_on,
+                  color: Colors.red,
+                ),
                 title: Text("Loan Status."),
-                onTap: (){
+                onTap: () {
                   Fluttertoast.showToast(msg: "My Account Open.");
                 },
               ),
               Spacer(),
-              ElevatedButton(onPressed: (){}, child: Row(
-                children: [
-                  Icon(Icons.logout),
-                  Text("Log out")
-                ],
-              ))
-
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xFF97C1E1)),
+                ),
+                onPressed: () async {
+                  setState(() {
+                    isSigningOut = true;
+                  });
+                  try {
+                    await FirebaseAuth.instance.signOut();
+                    // Navigate to the home page after sign-out
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => StartingHomePage()),
+                    );
+                  } catch (e) {
+                    print("Error signing out: $e");
+                    // Handle sign-out errors, if any
+                  } finally {
+                    setState(() {
+                      isSigningOut = false;
+                    });
+                  }
+                },
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  width: isSigningOut ? 100 : null, // Adjust width as needed
+                  height: isSigningOut ? 50 : null, // Adjust height as needed
+                  color: isSigningOut
+                      ? Colors.grey
+                      : null, // Change color when signing out
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.logout),
+                      SizedBox(
+                          width: 8), // Add some spacing between icon and text
+                      Text("Log out"),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ),
       ),
       appBar: AppBar(
+        backgroundColor: Colors.indigo,
         actions: [
           // Add IconButton for language toggle
           IconButton(
-            icon: Icon(Icons.language),
+            icon: Icon(
+              Icons.language,
+              color: Colors.white,
+            ),
             onPressed: toggleLanguage,
           ),
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: Icon(Icons.notifications, color: Colors.white),
             color: Colors.red,
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => NotificationPage()));
             },
           ),
         ],
         title: Text(
           _isEnglish ? "InRal" : "इनरल",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 25, fontStyle: FontStyle.italic),
+          style: TextStyle(
+              fontWeight: FontWeight.w900,
+              color: Colors.red,
+              fontSize: 25,
+              fontStyle: FontStyle.italic),
         ),
       ),
       body: PageView(

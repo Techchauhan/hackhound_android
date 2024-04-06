@@ -53,6 +53,7 @@ dependencies:
   flutter_localization: ^0.2.0
 
   local_auth: ^2.2.0
+  get_it: ^7.6.8
 
   lottie: ^3.1.0
 

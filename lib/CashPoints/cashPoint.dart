@@ -28,7 +28,7 @@ class _CashPointsState extends State<CashPoints> {
     await FirebaseFirestore.instance.collection('users').doc(currentUserId).get();
 
     // Retrieve and return cash points from user data
-    double cashPoints = userSnapshot['cashPoints'] ?? 0.0;
+    double cashPoints = double.parse(userSnapshot['cashPoints'].toString()); // Parse cash points to double
     return cashPoints;
   }
 

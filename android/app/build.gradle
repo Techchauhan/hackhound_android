@@ -57,6 +57,15 @@ android {
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+
+        missingDimensionStrategy 'react-native-camera', 'general'
+        missingDimensionStrategy 'react-native-keep-awake', 'general'
+        missingDimensionStrategy 'react-native-vector-icons', 'general'
+        missingDimensionStrategy 'mapbox', 'general'
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
     }
 
     buildTypes {

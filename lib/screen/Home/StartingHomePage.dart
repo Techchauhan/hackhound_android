@@ -27,8 +27,10 @@ class _StartingHomePageState extends State<StartingHomePage> {
 
         body: SingleChildScrollView(
           child: Container(
+
             child: Column(
               children: [
+                SizedBox(height: 22,),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -56,21 +58,31 @@ class _StartingHomePageState extends State<StartingHomePage> {
                           aspectRatio: 2.0,
                         ),
                       ),
-                      SizedBox(height: 10,),
+                      SizedBox(height: 40,),
 
                       const Text(
                         'Welcome to InRal Bank ',
                         style: TextStyle(
-                          fontSize: 26.0,
+                          fontSize: 30.0,
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
-                      }, child: Text("Proceed to Login")),
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 80),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                          );
+                        },
+                        child: Text("Proceed to Login", style: TextStyle(color: Colors.white),),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // Change the color as needed
+                        ),
+                      ),
+
+                      SizedBox(height: 40,),
                       ElevatedButton(onPressed: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateAccountPage()));
                       }, child: Text("Open Account"))
